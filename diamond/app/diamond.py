@@ -1,8 +1,10 @@
 # Python diamond kata ala https://github.com/davidwhitney/CodeDojos/tree/master/Diamond%20Kata
 # Phil C
 
-def func(x):
-    return x + 1
+from diamondmaker import DiamondMaker
 
-print("Hello world")
+supplied_letter = input("Supply a letter: ")
 
+diamondmaker = DiamondMaker()
+
+print("\n".join(diamondmaker.diamond(supplied_letter)))
