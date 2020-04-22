@@ -10,4 +10,4 @@ isbn_checker = IsbnChecker()
 
 isbn_checker_output = isbn_checker.isbncheck(isbn_input)
 
-print(isbn_checker_output)
+print(isbn_checker_output[1])

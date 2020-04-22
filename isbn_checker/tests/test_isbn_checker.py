@@ -10,40 +10,45 @@ isbn_check = IsbnChecker()
 
 # Input of exit should terminate the program
 def test_GivenAnInputOfexit_WhenChoosingISBN_ThenNiceExit():
-    assert isbn_check.isbncheck("exit") == "soft_exit"
+    assert isbn_check.input_validator("exit")[0] == "soft_exit"
+    assert isbn_check.input_validator("exit")[1] == 1
 
 # Should reject input which does not contain 9, 10 or 13 digits
 def test_GivenInputNot910or13_WhenSupplyingInput_ThenRejectInput():
-    assert isbn_check.isbncheck("12345678") == "input_error"
-    assert isbn_check.isbncheck("12345678901") == "input_error"
-    assert isbn_check.isbncheck("123456789012") == "input_error"
-    assert isbn_check.isbncheck("12345678901234") == "input_error"
+    assert isbn_check.input_validator("12345678")[0] == "input_error"
+    assert isbn_check.input_validator("12345678901")[0] == "input_error"
+    assert isbn_check.input_validator("123456789012")[0] == "input_error"
+    assert isbn_check.input_validator("12345678901234")[0] == "input_error"
+    assert isbn_check.input_validator("12345678")[1] == 2
 
 # Should accept input which contains 9, 10 or 13 digits
 def test_GivenInput910or13_WhenSupplyingInput_ThenAcceptInput():
-    assert isbn_check.isbncheck("123456789") == "0123456789"
-    assert isbn_check.isbncheck("1234567890") == "1234567890"
-    assert isbn_check.isbncheck("1234567890123") == "1234567890123"
+    assert isbn_check.input_validator("123456789")[0] == "123456789"
+    assert isbn_check.input_validator("1234567890")[0] == "1234567890"
+    assert isbn_check.input_validator("1234567890123")[0] == "1234567890123"
+    assert isbn_check.input_validator("123456789")[1] == 0
+    
 
 # Input should reject anything other than numbers, spaces and dashes
 def test_GivenInputNumSpaceDash_WhenSupplyingISBN_ThenShouldAccept():
-    assert isbn_check.isbncheck("12345678!") == "input_error"
-    assert isbn_check.isbncheck(None) == "input_error"
+    assert isbn_check.input_validator("12345678!")[0] == "input_error"
+    assert isbn_check.input_validator("12345678!")[1] == 2
+    assert isbn_check.isbncheck(None)[0] == "input_error"
+    assert isbn_check.input_validator(None)[1] == 2
     
-# Dashes and spaces should be stripped from the input
+# Valid ISBNs with Dashes and spaces should be accepted
 def test_GivenInputWithSpacesOrDashes_WhenSupplyingInput_ThenShouldStripThem():
-    assert isbn_check.isbncheck("  0-7475-  3269-9") == "0747532699"
+    assert isbn_check.isbncheck("  0-7475-  3269-9")[0] == "Valid ISBN"
 
-# 9 digit numbers should be converted to ten digit by adding a 0 to the start 
-def test_Given9DigitBSN_WhenSupplyingIsbn_ThenZeroShouldPrepend():
-    assert isbn_check.isbncheck("123456789") == "0123456789"
+# Valid ISBNs should be marked as valid
+def test_GivenValidISBN_WhenSupplyingIsbn_ThenShouldReturnValid():
+    assert isbn_check.isbncheck("747532699")[0] == "Valid ISBN"
+    assert isbn_check.isbncheck("0-7475-3269-9")[0] == "Valid ISBN"
+    assert isbn_check.isbncheck("0-7475-3269-9")[1] == True
+    assert isbn_check.isbncheck("978-0-306-40615-7")[0] == "Valid ISBN"
 
-# 10 digit ISBNs should be validated per the check supplied
-
-# 0-7475-3269-9 should be valid
-
-# 0-7475-3269-8 should be invalid
-
-# 13 digit ISBNs should be validated per the researched check
-
-# Input other than numbers, spaces and dashes should ask the user to re-input (inc. None)
+# Invalid ISBNs should be marked as invalid
+def test_GivenInvalidISBN_WhenSupplyingIsbn_ThenShouldReturnInvalid():
+    assert isbn_check.isbncheck("747532698")[0] == "Invalid ISBN"
+    assert isbn_check.isbncheck("747532698")[1] == False
+    assert isbn_check.isbncheck("9780306406156")[0] == "Invalid ISBN"
